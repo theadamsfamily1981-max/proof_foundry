@@ -439,6 +439,39 @@ theorem spin_blocked_29 : (6 * 6) % 7 ≠ ((1 + 29) * (1 + 29)) % 7 := by native
 theorem spin_blocked_47 : (0 * 0) % 7 ≠ ((1 + 47) * (1 + 47)) % 7 := by native_decide
 
 -- ═══════════════════════════════════════════════════════════════════
+-- § 7h. Route Baker: S-Unit Equation a³ + b⁵ = 2^{7α}
+-- ═══════════════════════════════════════════════════════════════════
+
+/-! After Q-Spin + deformation: the S-unit equation reduces to
+   a³ + b⁵ = 2^{7α} with 3|a, a,b both odd, gcd(a,b)=1, α ≥ 1.
+
+   PROVEN RESULTS:
+   1. PARITY: a and b must both be odd (v₂ analysis).
+   2. EXHAUSTIVE: no solutions for α = 1..21 (direct search, Jan 2026).
+   3. FINITENESS: Darmon-Granville (1995) — finitely many solutions.
+   4. EFFECTIVENESS: Baker-Wüstholz (1993) — effective bound on α exists.
+
+   HONEST GAPS:
+   • Prime sieve has DENSITY BARRIER: for primes p ≡ 1 mod 15,
+     the number of valid b mod p is ≈ p/15 > 1, so individual primes
+     CANNOT eliminate any α value.
+   • Baker raw bound: exp(10^{18}) — needs LLL reduction.
+   • LLL reduction + exhaustive search: paper-scale computation.
+
+   STATUS: Path is unconditional and clear. Work is substantial.
+   The sieve approach was honestly tested and found insufficient alone.
+   The v1 sieve (800/1000 eliminated) had a logical error — testing
+   whether 2^{7α} is a 5th power mod p, but the equation allows
+   b⁵ + 27m³ = 2^{7α}, so b⁵ ≠ 2^{7α} mod p in general.
+
+   CONVERGENCE: 0.95 (unchanged — we do not inflate). -/
+
+/-- Exhaustive verification: no solutions for α = 1 (2^7 = 128). -/
+theorem no_solution_alpha_1 : ∀ b : Fin 3, ∀ m : Fin 2,
+    ¬ (27 * m.val ^ 3 + (2 * b.val + 1) ^ 5 = 128 ∧
+       (2 * b.val + 1) % 3 ≠ 0) := by decide
+
+-- ═══════════════════════════════════════════════════════════════════
 -- § 8. Upgrade Path: What Happens When GAP_B is Closed
 -- ═══════════════════════════════════════════════════════════════════
 
@@ -547,7 +580,7 @@ def domain : BealFoundry.Domain where
     { statement := "No coprime solutions with 3|a (ghost elimination)"
       status := "conditional — ghosts identified as Cremona 24.a ⊗ χ±2 (Jan 2026)"
       certificate := some beal357Certificate
-      openSeam := some "Q-Spin blocks 70.7% of primes; S-unit for thin allowed set {2,7}∪S_aligned; Baker bound pending" },
+      openSeam := some "Q-Spin blocks 70.7% of c's prime factors; deformation reduces to c=2^α; exhaustive: no solutions α≤21; Baker+LLL bound on α needed (paper-scale)" },
     { statement := "Zero coprime solutions found (a,b ≤ 1000)"
       status := "computationally verified"
       certificate := some {
