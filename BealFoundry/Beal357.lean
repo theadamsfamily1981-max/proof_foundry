@@ -1,6 +1,7 @@
 import BealFoundry.Governance
 import BealFoundry.Lambda
 import BealFoundry.Observer
+import BealFoundry.CognitiveDiscipline
 
 /-!
 # The (3,5,7) Final Boss: Gap-Tracked Attack
@@ -595,5 +596,22 @@ def domain : BealFoundry.Domain where
       }
       openSeam := none }
   ]
+
+-- ═══════════════════════════════════════════════════════════════════
+-- § 11. Cognitive Discipline Bridge
+-- ═══════════════════════════════════════════════════════════════════
+
+/-- The (3,5,7) campaign is cognitively disciplined. -/
+theorem campaign_disciplined :
+    BealFoundry.CognitiveDiscipline.cognitivelyDisciplined
+      BealFoundry.CognitiveDiscipline.beal357Door = true :=
+  BealFoundry.CognitiveDiscipline.beal357_disciplined
+
+/-- Both governance AND cognitive discipline agree: no proven lock. -/
+theorem campaign_consistent_no_proven :
+    ¬ BealFoundry.permittedLock beal357Certificate.certType .proven ∧
+    ¬ BealFoundry.CognitiveDiscipline.disciplinedLockPermitted
+        BealFoundry.CognitiveDiscipline.beal357Door .proven :=
+  ⟨no_proven_lock, BealFoundry.CognitiveDiscipline.beal357_no_proven⟩
 
 end BealFoundry.Beal357
