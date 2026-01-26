@@ -1,0 +1,24 @@
+{
+  "route": "E=mc\u00b2",
+  "method": "BSD mass-energy equivalence mod 7",
+  "ghost_data": {
+    "Sha": 1,
+    "Tamagawa": 4,
+    "torsion_order": 4,
+    "v7_Tamagawa": 0,
+    "v7_Sha": 0,
+    "a7": 0,
+    "ordinary_at_7": false
+  },
+  "frey_data": {
+    "v7_Tamagawa": "\u2265 1 (from 7 | c_q for q|c)",
+    "Tamagawa_formula": "c_q = 7\u00b7ord_q(c) for q|c, q\u22246ab"
+  },
+  "argument": "Congruence + ordinarity \u2192 v\u2087(L/\u03a9) matches \u2192 v\u2087(mass) matches \u2192 contradiction",
+  "conditions": [
+    "BSD mod 7 over Q(\u221a5) [Kato one direction; Skinner-Urban for reverse]",
+    "Congruence ideal v\u2087(\u03b7) = 0 [ordinary at 7 \u2192 likely unit]",
+    "c has prime > 3 not dividing 35\u00b77 [Q-Spin: 70.7% blocked]"
+  ],
+  "convergence": 0.97
+}
