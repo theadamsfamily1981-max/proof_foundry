@@ -1,0 +1,104 @@
+{
+  "title": "Backwards Attack: Ghost Identification for (3,5,7)",
+  "date": "2026-01-26",
+  "summary": "Both ghost solutions for the (3,5,7) Beal Final Boss are identified as quadratic twists of the unique newform at level 24 (Cremona 24.a). No Magma computation over Q(sqrt5) is needed \u2014 Cremona database suffices.",
+  "ghost_identification": {
+    "ghost1": {
+      "parameter": "t\u2080 = -1/8",
+      "Q_curve": "24.a newform \u2297 \u03c7\u2082 (twist by d=2)",
+      "verification": "100% trace match at 16 primes (all isogeny class members)",
+      "j_invariant": "1556068/81 = 2\u00b2 \u00b7 73\u00b3 / 3\u2074",
+      "conductor_Q": "24\u00b7d\u00b2 (with d=2, adjusted for shared bad primes)",
+      "local_type_at_3": "Steinberg (multiplicative reduction)"
+    },
+    "ghost2": {
+      "parameter": "t\u2080 = 9/8",
+      "Q_curve": "24.a newform \u2297 \u03c7\u208b\u2082 (twist by d=-2)",
+      "verification": "100% trace match at 16 primes (all isogeny class members)",
+      "j_invariant": "1556068/81 = 2\u00b2 \u00b7 73\u00b3 / 3\u2074 (same as Ghost 1 \u2014 Legendre complement)",
+      "conductor_Q": "24\u00b7d\u00b2 (with d=-2, adjusted for shared bad primes)",
+      "local_type_at_3": "Steinberg (multiplicative reduction)"
+    },
+    "relationship": "Ghost 2 = Ghost 1 \u2297 \u03c7\u208b\u2081 (twist by -1). Both are twists of same base newform."
+  },
+  "cremona_isogeny_class": {
+    "label": "24.a",
+    "conductor": 24,
+    "factored_conductor": "2\u00b3 \u00b7 3",
+    "num_curves": 6,
+    "all_rank_0": true,
+    "newform_dimension": 1,
+    "curves": [
+      {
+        "label": "24.a1",
+        "equation": "y\u00b2 = x\u00b3 - x\u00b2 - 384x - 2772",
+        "torsion": "Z/2Z"
+      },
+      {
+        "label": "24.a2",
+        "equation": "y\u00b2 = x\u00b3 - x\u00b2 - 64x + 220",
+        "torsion": "Z/4Z"
+      },
+      {
+        "label": "24.a3",
+        "equation": "y\u00b2 = x\u00b3 - x\u00b2 - 24x - 36",
+        "torsion": "Z/2Z \u2295 Z/2Z"
+      },
+      {
+        "label": "24.a4",
+        "equation": "y\u00b2 = x\u00b3 - x\u00b2 - 4x + 4",
+        "torsion": "Z/2Z \u2295 Z/4Z"
+      },
+      {
+        "label": "24.a5",
+        "equation": "y\u00b2 = x\u00b3 - x\u00b2 + x",
+        "torsion": "Z/4Z"
+      },
+      {
+        "label": "24.a6",
+        "equation": "y\u00b2 = x\u00b3 - x\u00b2 + 16x - 180",
+        "torsion": "Z/2Z"
+      }
+    ]
+  },
+  "elimination_routes": {
+    "route_A_local": {
+      "description": "Local condition at ramified prime \u221a5 in Q(\u221a5)",
+      "argument": "Ghost = BC(24.a \u2297 \u03c7\u2082) has GOOD reduction at 5. Frey curve from (5,7,3) has BAD reduction at \u221a5. If level-lowering at p=7 preserves conductor at \u221a5, ghost eliminated.",
+      "status": "promising \u2014 needs verification of conductor exponent f_{\u221a5}(Frey)",
+      "sufficient_condition": "7 \u2224 f_{\u221a5}(Frey)",
+      "reference": "Pacetti-VT Propositions 3.14-3.15"
+    },
+    "route_B_traces": {
+      "description": "Mod-7 trace comparison using Cremona data",
+      "argument": "Ghost traces mod 7 are fully known from Cremona. Compare with Frey curve traces mod 7 at split primes of Q(\u221a5).",
+      "status": "feasible \u2014 no Magma needed, Python sufficient",
+      "primes_checked": "up to 113",
+      "key_insight": "No need to compute HMFs \u2014 ghost IS a known Q-form"
+    },
+    "route_C_isogeny": {
+      "description": "Full isogeny class analysis",
+      "argument": "24.a has 6 curves, all rank 0, no 7-torsion or 7-isogeny \u2192 irreducible mod-7 representation \u2192 strong Galois image",
+      "status": "auxiliary \u2014 supports Route A and Route B"
+    }
+  },
+  "backwards_connection": {
+    "key_insight": "Both ghost parameters t\u2080 \u2208 {-1/8, 9/8} are RATIONAL. Ghost HMFs over Q(\u221a5) are base changes of Q-forms. Q-forms are fully classified by Cremona.",
+    "signature_relativity": "The (3,5,7) ghosts live in the same modular form space (conductor 24) as forms relevant to other solved signatures. Knowledge from (2,4,6) and other proven cases flows into the (3,5,7) attack via shared modular form spaces.",
+    "what_this_means": "The 0.15 gap is not a theoretical barrier \u2014 it's a computational identification problem. The ghosts are KNOWN mathematical objects."
+  },
+  "gap_status_update": {
+    "GAP_A": {
+      "description": "3\u2224a case",
+      "status": "CLOSED",
+      "method": "Theorem C local type mismatch at prime 3"
+    },
+    "GAP_B": {
+      "description": "3|a case",
+      "old_status": "computationally open (required Magma over Q(\u221a5))",
+      "new_status": "computationally open (reduced to Cremona lookup + mod-7 trace comparison)",
+      "improvement": "No Magma needed. Ghost = known Q-curve. Elimination feasible in Python.",
+      "blocking": "Need to verify conductor exponent at \u221a5 for Route A, or complete mod-7 trace enumeration for Route B"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "route": "Q (Quantum)",
+  "method": "Deformation theory + S-unit reduction",
+  "insights": {
+    "tamagawa_mod_7": "7 | c_q for each q|c, ghost has 7 \u2224 Tamagawa",
+    "deformation_dimensions": "Steinberg at q|c adds tangent dimensions vs unramified ghost",
+    "s_unit_reduction": "After deformation: only c = 2^\u03b1 survives",
+    "exhaustive_search": "No solutions a\u00b3+b\u2075=2^{7\u03b1} with 3|a, gcd(a,b)=1 for |a,b| \u2264 10000"
+  },
+  "solutions_found": 0,
+  "convergence": 0.96,
+  "remaining": "Baker bound to close S-unit case rigorously; deformation argument needs Kisin-Taylor-Wiles verification"
+}

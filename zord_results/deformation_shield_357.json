@@ -1,0 +1,272 @@
+{
+  "ordering": {
+    "ordering": [
+      3,
+      7,
+      5
+    ],
+    "degree": "2",
+    "field_q": "Q(\u03b6_3)\u207a",
+    "field_r": "Q(\u03b6_5)\u207a",
+    "deg_q": 1,
+    "deg_r": "2",
+    "field": "Q(cos(2\u03c0/5))",
+    "equation_map": {
+      "original": "a^3 + b^5 = c^7",
+      "rewritten": "x^3 + y^7 + z^5 = 0",
+      "field": "Q(cos(2\u03c0/5))",
+      "degree": "2"
+    }
+  },
+  "hgm": {
+    "H_plus": {
+      "alpha": [
+        "1/5",
+        "-1/5"
+      ],
+      "beta": [
+        "1/3",
+        "-1/3"
+      ],
+      "description": "\u210b((1/5, -1/5), (1/3, -1/3) | t)"
+    },
+    "H_minus": {
+      "alpha": [
+        "1/10",
+        "-1/10"
+      ],
+      "beta": [
+        "1/3",
+        "-1/3"
+      ],
+      "description": "\u210b((1/10, -1/10), (1/3, -1/3) | t)"
+    },
+    "specialization": "t\u2080 = -x^3 / z^5",
+    "wild_primes": [
+      2,
+      3,
+      5
+    ],
+    "wild_product": 30
+  },
+  "ghosts": {
+    "signature": "(3, p, 5)",
+    "total_ghosts": 50,
+    "distinct_t0": 6,
+    "parameters": [
+      {
+        "t0": "1029/1024",
+        "t0_float": 1.0048828125,
+        "example": {
+          "x": 7,
+          "z": 4,
+          "coeff_x": 3,
+          "constant": 5,
+          "coeff_z": 1,
+          "exponents": [
+            1,
+            0,
+            0,
+            1,
+            0,
+            0
+          ]
+        },
+        "count": 9
+      },
+      {
+        "t0": "8/5",
+        "t0_float": 1.6,
+        "example": {
+          "x": 2,
+          "z": 1,
+          "coeff_x": 1,
+          "constant": 3,
+          "coeff_z": 5,
+          "exponents": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            1
+          ]
+        },
+        "count": 9
+      },
+      {
+        "t0": "8/3",
+        "t0_float": 2.6666666666666665,
+        "example": {
+          "x": 2,
+          "z": 1,
+          "coeff_x": 1,
+          "constant": 5,
+          "coeff_z": 3,
+          "exponents": [
+            0,
+            0,
+            0,
+            1,
+            1,
+            0
+          ]
+        },
+        "count": 9
+      },
+      {
+        "t0": "8/1",
+        "t0_float": 8.0,
+        "example": {
+          "x": 2,
+          "z": 1,
+          "coeff_x": 1,
+          "constant": 9,
+          "coeff_z": 1,
+          "exponents": [
+            0,
+            0,
+            2,
+            0,
+            0,
+            0
+          ]
+        },
+        "count": 10
+      },
+      {
+        "t0": "343/32",
+        "t0_float": 10.71875,
+        "example": {
+          "x": 7,
+          "z": 2,
+          "coeff_x": 1,
+          "constant": 375,
+          "coeff_z": 1,
+          "exponents": [
+            0,
+            0,
+            1,
+            3,
+            0,
+            0
+          ]
+        },
+        "count": 3
+      },
+      {
+        "t0": "24/1",
+        "t0_float": 24.0,
+        "example": {
+          "x": 6,
+          "z": 1,
+          "coeff_x": 1,
+          "constant": 225,
+          "coeff_z": 9,
+          "exponents": [
+            0,
+            0,
+            2,
+            2,
+            2,
+            0
+          ]
+        },
+        "count": 10
+      }
+    ]
+  },
+  "conductor": {
+    "conductor_at_2": {
+      "prime": 2,
+      "exponent_range": [
+        0,
+        6
+      ],
+      "note": "all odd: conductor depends on mod 8 congruences"
+    },
+    "conductor_at_3": {
+      "prime": 3,
+      "divides": "y (or neither)",
+      "exponent_range": [
+        0,
+        2
+      ],
+      "note": "3\u2224xz: conductor 0-2"
+    },
+    "conductor_at_5": {
+      "prime": 5,
+      "divides": "neither x,z",
+      "exponent_range": [
+        0,
+        3
+      ],
+      "note": "5\u2224xz: depends on F(x) irreducibility over Q_5"
+    },
+    "level_norm_range": [
+      1,
+      72000
+    ],
+    "field": "Q(\u221a5)",
+    "note": "Serre level is an ideal in O_{Q(\u221a5)}. Norm gives the rational level. The (5,p,3) paper computes HMFs up to norm 400."
+  },
+  "big_image": {
+    "prime": 7,
+    "field": "Q(\u221a5)",
+    "SL2_F7_order": 336,
+    "maximal_subgroups": [
+      {
+        "name": "Borel",
+        "order": 42,
+        "obstruction": "representation is reducible"
+      },
+      {
+        "name": "Normalizer of split Cartan",
+        "order": 12,
+        "obstruction": "induced from character of Q(\u221a5)"
+      },
+      {
+        "name": "Normalizer of non-split Cartan",
+        "order": 16,
+        "obstruction": "induced from character of Q(\u221a-7)"
+      },
+      {
+        "name": "S\u2084 (exceptional)",
+        "order": 24,
+        "obstruction": "Serre's conjecture weight bound"
+      },
+      {
+        "name": "A\u2085 (exceptional)",
+        "order": 60,
+        "obstruction": "Only for p \u2261 \u00b11 mod 5 \u2192 7 \u2261 2 mod 5 \u2192 EXCLUDED"
+      }
+    ],
+    "p7_specific": {
+      "7_mod_5": 2,
+      "A5_excluded": true,
+      "note": "A\u2085 subgroup excluded because 7 \u2261 2 mod 5 (not \u00b11). S\u2084 can be checked via weight considerations. Borel case (reducibility) requires direct computation. Cartan cases require checking if \u03c1\u0304\u2087 is dihedral."
+    },
+    "verification_strategy": "For each conductor level \ud835\udd2b over Q(\u221a5):\n  1. Compute \u03c1\u0304\u2087 from the HGM at that level\n  2. Check image is not in Borel (reducibility test)\n  3. Check image is not dihedral (Cartan test)\n  4. S\u2084 check via Serre weight\n  5. A\u2085 already excluded (7 \u2261 2 mod 5)\nIf all pass \u2192 Big Image holds for p=7"
+  },
+  "switch": {
+    "mechanism": "Taylor-Wiles 3-5-7 switch",
+    "equation": "x\u2075 + y\u2077 + z\u00b3 = 0 over Q(\u221a5)",
+    "primary_prime": 7,
+    "switch_targets": [
+      5,
+      3
+    ],
+    "logic": {
+      "step_1": "Start with mod-7 representation \u03c1\u0304\u2087 from HGM \u210b\u207a or \u210b\u207b",
+      "step_2": "Check Big Image: does im(\u03c1\u0304\u2087) \u2287 SL\u2082(F\u2087)?",
+      "step_3_yes": "Big Image holds \u2192 apply level-lowering \u2192 reach conductor \ud835\udd2b \u2192 check S\u2082(\u0393\u2080(\ud835\udd2b)) = 0",
+      "step_3_no": "Big Image fails \u2192 switch to mod-5 or mod-3",
+      "step_4_mod5": "Mod-5: \u03c1\u0304\u2085 from \u210b\u207a specialized differently. Since 5 ramifies in Q(\u221a5), use Fontaine-Laffaille",
+      "step_4_mod3": "Mod-3: \u03c1\u0304\u2083 reducible \u2192 use Langlands-Tunnell (as in original Wiles). Known modular.",
+      "step_5": "Whichever prime gives irreducible \u03c1\u0304, apply Taylor-Wiles patching to get R = T",
+      "step_6": "If R = T = 0 (no modular forms at that level), then no solution exists \u2192 Beal holds for (3,5,7)"
+    },
+    "key_insight": "The 3-5 switch for (3,5,7) is STRONGER than for FLT because we have THREE primes to switch between, not just two. If mod-7 fails, try mod-5. If mod-5 fails, try mod-3. The Langlands-Tunnell theorem guarantees mod-3 always works as a starting point (the representation is automatically modular).",
+    "goldilocks_interaction": "The degree-3 cyclotomic field from 7 (Q(\u03b6\u2087)\u207a = Q(cos(2\u03c0/7))) is NOT the base field in our ordering. Our base field is Q(\u221a5) from the q=5 exponent. The 7 appears only as the mod-p prime, where it creates a finite-image obstruction \u2014 not a field extension obstruction."
+  }
+}

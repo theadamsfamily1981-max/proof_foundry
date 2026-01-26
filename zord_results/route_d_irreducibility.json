@@ -1,0 +1,18 @@
+{
+  "route": "D",
+  "method": "Irreducibility of mod-7 Galois representation",
+  "gl2_analysis": {
+    "gl2_order": 2016,
+    "sl2_order": 336,
+    "borel_order": 252
+  },
+  "criteria": {
+    "ghost_irreducible_mod7": true
+  },
+  "serre_analysis": {
+    "ghost_irreducible": true,
+    "frey_likely_irreducible": true,
+    "seven_torsion_failures": 18,
+    "total_primes_checked": 33
+  }
+}
