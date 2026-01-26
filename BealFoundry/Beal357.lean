@@ -149,7 +149,7 @@ def beal357Certificate : BealFoundry.Certificate where
   reference    := "Deformation Shield via (5,p,3) paper (arXiv:2512.17845)"
   seam         := "GAP_B: ghost trace elimination for 3|a at p=7"
   verifier     := "Pacetti–VT framework + ghost_killer_357.py"
-  blockingSeam := some "Magma computation of HMFs at ghost levels over Q(√5) for p=7"
+  blockingSeam := some "Door A: Pacetti-VT EliminationExponents for p=7 on ghosts 24.a⊗χ±2 over Q(√5)"
 
 /-- The certificate is NOT hard (conditional). -/
 theorem cert_not_hard : beal357Certificate.isHard = false := by native_decide
@@ -442,29 +442,33 @@ theorem spin_blocked_47 : (0 * 0) % 7 ≠ ((1 + 47) * (1 + 47)) % 7 := by native
 -- § 7h. Route Baker: S-Unit Equation a³ + b⁵ = 2^{7α}
 -- ═══════════════════════════════════════════════════════════════════
 
-/-! After Q-Spin + deformation: the S-unit equation reduces to
-   a³ + b⁵ = 2^{7α} with 3|a, a,b both odd, gcd(a,b)=1, α ≥ 1.
+/-! Route Baker: S-Unit Analysis (CORRECTED Jan 26 2026)
 
-   PROVEN RESULTS:
+   CORRECTION: The previous claim that "Q-Spin + deformation reduces
+   to c = 2^α" was OVER-REACHING. Q-Spin gives:
+     S_blocked ≈ 70.7% density (primes where a_q(24.a)² ≢ (1+q)² mod 7)
+     S_allowed ≈ 29.3% density (primes where spin IS aligned)
+   S_allowed is INFINITE: {53, 59, 73, 89, 101, 109, ...}
+   So c is NOT restricted to powers of 2.
+
+   The S-unit equation a³ + b⁵ = 2^{7α} was built on a false premise.
+   Baker-Wüstholz requires a FINITE set S, which Q-Spin alone does not give.
+
+   WHAT IS ACTUALLY PROVEN:
    1. PARITY: a and b must both be odd (v₂ analysis).
-   2. EXHAUSTIVE: no solutions for α = 1..21 (direct search, Jan 2026).
+   2. EXHAUSTIVE: no coprime solutions (a,b,c ≤ 1000).
    3. FINITENESS: Darmon-Granville (1995) — finitely many solutions.
-   4. EFFECTIVENESS: Baker-Wüstholz (1993) — effective bound on α exists.
+   4. Q-Spin: 70.7% of primes blocked from dividing c.
+   5. Sieve DENSITY BARRIER: individual primes cannot eliminate α values.
 
-   HONEST GAPS:
-   • Prime sieve has DENSITY BARRIER: for primes p ≡ 1 mod 15,
-     the number of valid b mod p is ≈ p/15 > 1, so individual primes
-     CANNOT eliminate any α value.
-   • Baker raw bound: exp(10^{18}) — needs LLL reduction.
-   • LLL reduction + exhaustive search: paper-scale computation.
+   THE BLOCKING SEAM (Bridge Lemma):
+   All roads lead through TRACE ELIMINATION (Door A):
+     Run Pacetti-VT EliminationExponents for p=7 on ghosts 24.a⊗χ±2
+     over Q(√5) with (5,7,3) Frey pair. This is a Magma computation.
+     It either succeeds (GAP_B closes) or fails (need different ℓ).
+   Baker (Door B) is BLOCKED until Door A provides a finite S.
 
-   STATUS: Path is unconditional and clear. Work is substantial.
-   The sieve approach was honestly tested and found insufficient alone.
-   The v1 sieve (800/1000 eliminated) had a logical error — testing
-   whether 2^{7α} is a 5th power mod p, but the equation allows
-   b⁵ + 27m³ = 2^{7α}, so b⁵ ≠ 2^{7α} mod p in general.
-
-   CONVERGENCE: 0.95 (unchanged — we do not inflate). -/
+   CONVERGENCE: 0.92 (DOWNGRADED from 0.95 after c=2^α correction). -/
 
 /-- Exhaustive verification: no solutions for α = 1 (2^7 = 128). -/
 theorem no_solution_alpha_1 : ∀ b : Fin 3, ∀ m : Fin 2,
@@ -580,7 +584,7 @@ def domain : BealFoundry.Domain where
     { statement := "No coprime solutions with 3|a (ghost elimination)"
       status := "conditional — ghosts identified as Cremona 24.a ⊗ χ±2 (Jan 2026)"
       certificate := some beal357Certificate
-      openSeam := some "Q-Spin blocks 70.7% of c's prime factors; deformation reduces to c=2^α; exhaustive: no solutions α≤21; Baker+LLL bound on α needed (paper-scale)" },
+      openSeam := some "Q-Spin blocks 70.7% but S_allowed is INFINITE; c≠2^α (corrected); Door A: Magma trace elimination for p=7 (blocking seam); Door B (Baker): blocked until S finite" },
     { statement := "Zero coprime solutions found (a,b ≤ 1000)"
       status := "computationally verified"
       certificate := some {
