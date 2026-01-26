@@ -13,3 +13,4 @@ import BealFoundry.HDC
 import BealFoundry.NavierStokes
 import BealFoundry.TensorGenerated
 import BealFoundry.UnifiedSolver
+import BealFoundry.Beal357
