@@ -1,0 +1,11 @@
+name = "BealFoundry"
+version = "0.1.0"
+keywords = ["math", "proof-governance", "automated-reasoning"]
+defaultTargets = ["BealFoundry"]
+
+[leanOptions]
+pp.unicode.fun = true
+autoImplicit = false
+
+[[lean_lib]]
+name = "BealFoundry"

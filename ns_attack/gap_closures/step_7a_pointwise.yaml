@@ -1,0 +1,17 @@
+closes_gap: GAP_002_POINTWISE
+fragile: true
+fragile_reason: "Gives C \u2264 \u221A2 \u2248 1.41, Fourier should sharpen to C <\
+  \ 1"
+justification: "Quadratic form \u03BE\u1D40M\u03BE = \u03BE\u1D40S\u03BE since \u03BE\
+  \u1D40A\u03BE = 0 for antisymmetric A. Traceless matrices have bounded spectral\
+  \ radius relative to Frobenius norm."
+latex: \omega \cdot (\omega \cdot \nabla)u = |\omega|^2 \xi^T S \xi, \quad \text{tr}(S)
+  = 0 \implies \max|\lambda_i| \leq \sqrt{2/3} \|S\|_F
+number: 7a
+statement: "POINTWISE BOUND: The quantity \u03C9\xB7(\u03C9\xB7\u2207)u equals |\u03C9\
+  |\xB2\xB7\u03BE\u1D40(\u2207u)\u03BE where \u03BE = \u03C9/|\u03C9|. This is a quadratic\
+  \ form in the gradient, which equals \u03BE\u1D40S\u03BE (the antisymmetric part\
+  \ contributes zero). Since S is traceless from incompressibility, its eigenvalues\
+  \ are bounded: max|\u03BB\u1D62| \u2264 \u221A(2/3)\xB7\u2016S\u2016_F."
+uses_orthogonality: false
+uses_traceless: true

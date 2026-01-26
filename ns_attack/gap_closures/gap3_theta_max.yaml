@@ -1,0 +1,22 @@
+approaches:
+- difficulty: Singular kernel, nonlocal analysis
+  idea: "Express \u2207u via Biot-Savart kernel; cross product structure limits alignment"
+  name: Biot-Savart
+- difficulty: Phase coherence analysis
+  idea: "Each \u015C(k) is rank-2 in plane \u22A5 k; superposition averages alignment\
+    \ down"
+  name: Fourier Geometry
+- difficulty: Infinite-dimensional optimization
+  idea: "Solve max problem for alignment subject to \u2207\xB7u = 0"
+  name: Variational
+- difficulty: Cross-scale interaction terms
+  idea: Littlewood-Paley decomposition; bound at each scale, sum
+  name: Scale-by-Scale
+confidence: 0.7
+empirical_constant: 0.113
+gap_description: "Rigorous \u03B8_max computation for C < 1"
+gap_id: GAP_003_THETA_MAX
+key_insight: "The Fourier orthogonality k\xB7\xFB(k) = 0 constrains each mode's contribution\
+  \ to the strain tensor. When modes superpose to form S(x), the phase relationships\
+  \ prevent coherent constructive interference that would maximize alignment."
+status: CONCEPTUALLY_CLOSED

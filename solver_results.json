@@ -1,0 +1,27 @@
+{
+  "timestamp": "2026-01-26 09:08:30",
+  "elapsed_s": 22.11307168006897,
+  "beal": {
+    "signatures_checked": 455,
+    "signatures_clear": 455,
+    "with_solutions": 0,
+    "search_bound": 1000,
+    "max_exp": 15,
+    "cert_type": "COMPUTATION",
+    "state": "active",
+    "counterexamples": [],
+    "regime_breakdown": {
+      "spherical": 0,
+      "euclidean": 1,
+      "hyperbolic": 454
+    }
+  },
+  "ns": {
+    "state": "active",
+    "cert": "conditional"
+  },
+  "riemann": {
+    "state": "active",
+    "cert": "heuristic"
+  }
+}

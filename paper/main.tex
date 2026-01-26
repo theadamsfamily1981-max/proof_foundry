@@ -1,0 +1,558 @@
+\documentclass[runningheads]{llncs}
+
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  citecolor=blue,
+  urlcolor=blue
+}
+
+\usepackage{listings}
+\lstdefinelanguage{lean}{
+  keywords={theorem,lemma,def,inductive,structure,namespace,end,section,variable,
+    by,fun,match,with,have,show,let,in,where,do,if,then,else,intro,cases,simp,
+    exact,apply,omega,sorry,import,open,deriving},
+  sensitive=true,
+  morecomment=[l]{--},
+  morecomment=[s]{/-}{-/},
+  morestring=[b]"
+}
+\lstset{
+  language=lean,
+  basicstyle=\ttfamily\small,
+  columns=fullflexible,
+  breaklines=true,
+  frame=single,
+  rulecolor=\color{black!20},
+  keywordstyle=\bfseries,
+  commentstyle=\itshape\color{black!50},
+  numbers=left,
+  numberstyle=\tiny\color{black!40},
+  numbersep=5pt,
+  literate={∀}{{\ensuremath{\forall}}}1 {¬}{{\ensuremath{\lnot}}}1
+           {→}{{\ensuremath{\rightarrow}}}1 {←}{{\ensuremath{\leftarrow}}}1
+           {≥}{{\ensuremath{\geq}}}1 {≤}{{\ensuremath{\leq}}}1
+}
+
+\begin{document}
+
+\title{A Proof Governance Kernel\\with Machine-Checked Safety Invariants}
+\titlerunning{Proof Governance Kernel}
+
+\author{Croft Adams\inst{1}}
+\authorrunning{C.\ Adams}
+\institute{Independent Research \\ \email{theadamsfamily1981@gmail.com}}
+
+\maketitle
+
+\begin{abstract}
+Long-horizon mathematical proof campaigns routinely involve claims at
+different evidence levels: some unconditionally proved, others conditional on
+open conjectures, others supported only by heuristic computation.
+Misclassifying conditional or heuristic claims as unconditional is a
+common workflow failure mode in both human and AI-assisted mathematics.
+
+We present a \emph{proof governance kernel}: a small, typed state machine that
+tracks domain lifecycle (active, dropped, locked, reactivated), certificate
+strength (proof, reduction, computation, conditional, heuristic), and lock
+permanence (proven, conditional, heuristic). We formalize the kernel in Lean~4
+and machine-check five safety invariants: (1)~proven locks are permanent,
+(2)~soft certificates cannot produce proven locks, (3)~hard certificates are
+strictly stronger than soft ones, (4)~every proven lock requires prior
+evidence, and (5)~no lifecycle phase can be skipped.
+
+We demonstrate the kernel on two case studies: tracking conditional versus
+unconditional status in a number-theoretic proof campaign (the generalized
+Fermat equation), and preventing circular dependencies in proof DAGs.
+Unlike build-level or session-level governance, our kernel operates at
+claim-level granularity, governing epistemic status across heterogeneous
+evidence sources. All Lean~4 sources compile without errors and are
+provided as a reproducibility artifact.
+
+\keywords{proof engineering \and Lean~4 \and formal verification \and
+governance \and certificate systems \and soundness}
+\end{abstract}
+
+%% ============================================================
+\section{Introduction}
+\label{sec:intro}
+
+Mathematical research, whether conducted by humans or AI systems, proceeds
+through claims of varying confidence. A conjecture supported by numerical
+evidence differs fundamentally from a peer-reviewed theorem, yet both may
+coexist in a single research programme. When proofs span months or years and
+involve multiple contributors---increasingly including machine
+learning systems whose outputs may be plausible but
+unsound~\cite{FarrugiaEtAl2024}---the risk of \emph{unsound claim
+promotion} becomes acute: a conditional result is inadvertently
+treated as unconditional, or a heuristic observation is locked
+as settled.
+
+We propose a lightweight \emph{proof governance kernel} that addresses this
+risk through three mechanisms:
+
+\begin{enumerate}
+\item \textbf{Typed certificates.} Every state transition carries a certificate
+  whose type (proof, reduction, computation, conditional, or heuristic) is
+  machine-checked. Certificate types are ordered by strength and partitioned
+  into \emph{hard} (proof, reduction, computation) and \emph{soft}
+  (conditional, heuristic).
+
+\item \textbf{Typed locks.} When a domain is resolved, it receives a lock whose
+  type (proven, conditional, heuristic) determines whether it can be reopened.
+  The lock type must be compatible with the certificate type: only hard
+  certificates can produce proven locks.
+
+\item \textbf{Lifecycle enforcement.} A domain must pass through mandatory
+  intermediate states (active $\to$ dropped $\to$ locked), preventing shortcuts
+  that bypass evidence requirements.
+\end{enumerate}
+
+\noindent
+We formalize this kernel in Lean~4 (v4.14.0) and prove five safety theorems
+entirely within Lean's kernel, requiring no axioms beyond the Lean~4 type
+theory. The formalization comprises approximately 350 lines of Lean across
+three files.
+
+\paragraph{Contributions.}
+\begin{itemize}
+\item A formal model of proof state governance with typed certificates
+  and locks (\S\ref{sec:model}).
+\item Five machine-checked safety invariants (\S\ref{sec:theorems}).
+\item Two case studies demonstrating practical application
+  (\S\ref{sec:case1}, \S\ref{sec:case2}).
+\item A reproducibility artifact with build instructions (\S\ref{sec:artifact}).
+\end{itemize}
+
+%% ============================================================
+\section{The Kernel Model}
+\label{sec:model}
+
+\subsection{Certificate Types}
+
+We define five certificate types, ordered by decreasing strength:
+
+\begin{definition}[Certificate Type]
+\label{def:certtype}
+A \emph{certificate type} is one of five values, ordered by
+decreasing strength: \texttt{proof}~(5), \texttt{reduction}~(4),
+\texttt{computation}~(3), \texttt{conditional}~(2),
+\texttt{heuristic}~(1). A certificate type is \emph{hard} if it
+is \texttt{proof}, \texttt{reduction}, or \texttt{computation};
+otherwise it is \emph{soft}.
+\end{definition}
+
+\noindent
+In Lean~4:
+
+\begin{lstlisting}
+inductive CertificateType where
+  | proof | reduction | computation | conditional | heuristic
+
+def CertificateType.strength : CertificateType → Nat
+  | .proof => 5 | .reduction => 4 | .computation => 3
+  | .conditional => 2 | .heuristic => 1
+
+def CertificateType.isHard : CertificateType → Bool
+  | .proof => true | .reduction => true | .computation => true
+  | .conditional => false | .heuristic => false
+\end{lstlisting}
+
+\subsection{Lock Types}
+
+\begin{definition}[Lock Type]
+\label{def:locktype}
+A \emph{lock type} is one of:
+\begin{itemize}
+\item \texttt{proven}: permanent (cannot reopen),
+\item \texttt{conditional}: reopenable upon condition resolution,
+\item \texttt{heuristic}: reopenable with new tools.
+\end{itemize}
+\end{definition}
+
+\begin{lstlisting}
+def LockType.canReopen : LockType → Bool
+  | .proven => false
+  | .conditional => true
+  | .heuristic => true
+\end{lstlisting}
+
+\subsection{Domain States and Transitions}
+
+\begin{definition}[Domain State]
+\label{def:state}
+A domain occupies one of four states: \texttt{active} (under investigation),
+\texttt{dropped}$(ct)$ (reduced with certificate type $ct$),
+\texttt{locked}$(lt)$ (resolved with lock type $lt$), or \texttt{reactivated}
+(reopened from a non-proven lock).
+\end{definition}
+
+\begin{definition}[Valid Transition]
+\label{def:transition}
+The permitted transitions are defined inductively:
+\begin{align}
+  &\texttt{active} \to \texttt{dropped}(ct) &&\text{for any } ct \label{eq:t1}\\
+  &\texttt{dropped}(ct) \to \texttt{locked}(lt) &&\text{for any } lt \label{eq:t2}\\
+  &\texttt{locked}(lt) \to \texttt{reactivated} &&\text{iff } lt.\texttt{canReopen} = \texttt{true} \label{eq:t3}\\
+  &\texttt{reactivated} \to \texttt{active} && \label{eq:t4}
+\end{align}
+\end{definition}
+
+\subsection{Lock Permission}
+
+\begin{definition}[Permitted Lock]
+\label{def:permitted}
+A certificate type $ct$ \emph{permits} a lock type $lt$ according to:
+\begin{itemize}
+\item $\texttt{permittedLock}(ct, \texttt{proven})$ iff $ct.\texttt{isHard} = \texttt{true}$;
+\item $\texttt{permittedLock}(ct, \texttt{conditional})$ iff $ct = \texttt{conditional}$ or $ct.\texttt{isHard} = \texttt{true}$;
+\item $\texttt{permittedLock}(ct, \texttt{heuristic})$ always.
+\end{itemize}
+\end{definition}
+
+%% ============================================================
+\section{Safety Theorems}
+\label{sec:theorems}
+
+All governance kernel theorems below are machine-checked in Lean~4
+with no \texttt{sorry} and no additional axioms. (The case study in
+\S\ref{sec:case1} includes one intentional \texttt{sorry} marking
+conditional analytic content; it is not used by any kernel theorem.)
+
+\begin{theorem}[Proven Lock Permanence]
+\label{thm:permanent}
+No valid transition exits the proven-locked state:
+\[
+\forall\, s.\; \neg\, \texttt{ValidTransition}(\texttt{locked}(\texttt{proven}),\, s).
+\]
+\end{theorem}
+
+\begin{proof}
+By case analysis on \texttt{ValidTransition}. The only constructor producing a
+transition from $\texttt{locked}(lt)$ is \texttt{lockToReactivate}, which
+requires $lt.\texttt{canReopen} = \texttt{true}$. Since
+$\texttt{proven}.\texttt{canReopen} = \texttt{false}$, no constructor applies.
+\end{proof}
+
+\begin{theorem}[No Premature Proven Lock]
+\label{thm:nopremature}
+Soft certificates cannot produce proven locks:
+\begin{align*}
+  &\neg\, \texttt{permittedLock}(\texttt{heuristic},\, \texttt{proven}) \\
+  &\neg\, \texttt{permittedLock}(\texttt{conditional},\, \texttt{proven})
+\end{align*}
+\end{theorem}
+
+\begin{proof}
+By unfolding \texttt{permittedLock} and \texttt{isHard}:
+both \texttt{heuristic.isHard} and \texttt{conditional.isHard}
+reduce to \texttt{false}, contradicting the requirement for a
+proven lock.
+\end{proof}
+
+\begin{theorem}[Strength Gap]
+\label{thm:gap}
+Every hard certificate type has strictly greater strength than every soft
+certificate type:
+\begin{multline*}
+\forall\, ct_h\, ct_s.\;
+  ct_h.\texttt{isHard} = \texttt{true} \;\land\;
+  ct_s.\texttt{isHard} = \texttt{false} \\
+  \Longrightarrow\;
+  ct_h.\texttt{strength} > ct_s.\texttt{strength}.
+\end{multline*}
+\end{theorem}
+
+\begin{proof}
+Hard types have strength $\geq 3$ and soft types have strength $\leq 2$,
+established by exhaustive case analysis on the five constructors.
+\end{proof}
+
+\begin{theorem}[Evidence Requirement]
+\label{thm:evidence}
+Any transition chain from \texttt{active} to $\texttt{locked}(\texttt{proven})$
+must include an intermediate \texttt{dropped} state:
+\begin{multline*}
+\texttt{CertChain}(\texttt{active},\, \texttt{locked}(\texttt{proven})) \implies \\
+  \exists\, ct.\; \texttt{Nonempty}(\texttt{CertChain}(\texttt{active},\, \texttt{dropped}(ct))).
+\end{multline*}
+\end{theorem}
+
+\begin{proof}
+By case analysis on the chain. A single-step chain from
+\texttt{active} to \texttt{locked\allowbreak(proven)} is impossible
+(no matching constructor). A multi-step chain must begin
+with \texttt{activeToDrop}$(ct)$, giving the witness.
+\end{proof}
+
+\begin{theorem}[No State Skipping]
+\label{thm:noskip}
+The \texttt{active} state cannot transition directly to any locked state:
+$$\forall\, lt.\; \neg\, \texttt{ValidTransition}(\texttt{active},\, \texttt{locked}(lt)).$$
+\end{theorem}
+
+\begin{proof}
+By case analysis: no constructor of \texttt{ValidTransition} has source
+\texttt{active} and target $\texttt{locked}(lt)$.
+\end{proof}
+
+%% ============================================================
+\section{Case Study I: Conditional Certificates in Number Theory}
+\label{sec:case1}
+
+We instantiate the governance kernel on the generalized Fermat equation
+$a^p + b^q = c^r$, specifically tracking the distinction between conditional
+and unconditional results.
+
+\paragraph{Background.}
+Define $\lambda = 1/p + 1/q + 1/r$. When $\lambda < 1$, the equation has at
+most finitely many coprime solutions by the Darmon--Granville theorem
+\cite{DarmonGranville1995}, which invokes Faltings' theorem
+\cite{Faltings1983}. A standard application of the ABC conjecture
+\cite{Masser1985,Oesterle1988} yields a shorter finiteness argument, but this
+is \emph{conditional} on the unproved ABC conjecture.
+
+\paragraph{Certificate Assignment.}
+In our kernel, the Darmon--Granville result receives a \texttt{proof}
+certificate (unconditional, peer-reviewed). The ABC-based argument receives a
+\texttt{conditional} certificate with an explicit blocking seam: ``ABC
+conjecture unproved.''
+
+\paragraph{Governance Enforcement.}
+We verify in Lean~4:
+\begin{itemize}
+\item The ABC certificate is not hard:
+  $\texttt{abcBealCertificate}.\texttt{isHard} = \texttt{false}$.
+\item It cannot support a proven lock:\\
+  $\neg\, \texttt{permittedLock}(\texttt{conditional},\, \texttt{proven})$.
+\item The Darmon--Granville certificate \emph{can} support a proven lock:\\
+  $\texttt{permittedLock}(\texttt{proof},\, \texttt{proven})$.
+\end{itemize}
+
+\paragraph{Signature Verification.}
+We additionally verify regime classifications for specific signatures using
+Lean's \texttt{native\_decide} tactic:
+\begin{itemize}
+\item $(2,2,2)$: spherical ($\lambda = 3/2 > 1$).
+\item $(3,3,3)$, $(2,3,6)$, $(2,4,4)$: euclidean ($\lambda = 1$).
+\item $(3,5,7)$: hyperbolic ($\lambda = 71/105 < 1$).
+\end{itemize}
+
+%% ============================================================
+\section{Case Study II: Circular Dependency Prevention}
+\label{sec:case2}
+
+A second failure mode in proof campaigns is \emph{circular dependency}: claim
+$A$ depends on claim $B$, which depends on $A$. Our kernel prevents this
+structurally.
+
+\paragraph{Structural Argument.}
+Define a rank function: $\texttt{active} \mapsto 0$,
+$\texttt{dropped}(\_) \mapsto 1$, $\texttt{locked}(\_) \mapsto 2$,
+$\texttt{reactivated} \mapsto 0$.
+By Theorem~\ref{thm:noskip}, forward transitions (excluding
+reactivation) strictly increase rank. Since the rank space is
+finite, any forward-only chain terminates. Reactivation resets
+rank to zero but requires the lock to be non-proven
+(Theorem~\ref{thm:permanent}).
+
+\paragraph{Mechanized Impossibility.}
+We verify in Lean~4 that the proven-locked state is a dead end:
+
+\begin{lstlisting}[mathescape=true]
+-- No transition leaves proven-locked state
+theorem proven_is_terminal :
+    $\forall$ (s : DomainState),
+    $\lnot$ ValidTransition (.locked .proven) s := by
+  intro s h; cases h with
+  | lockToReactivate lt hcan =>
+    simp [LockType.canReopen] at hcan
+
+-- Cannot skip active directly to locked
+theorem no_skip_active_to_locked :
+    $\forall$ (lt : LockType),
+    $\lnot$ ValidTransition .active (.locked lt) := by
+  intro lt h; cases h
+\end{lstlisting}
+
+\begin{corollary}[No Proven Lock Cycle]
+\label{cor:nocycle}
+A domain that reaches $\texttt{locked}(\texttt{proven})$ cannot
+return to \texttt{active} via any sequence of valid transitions.
+\end{corollary}
+
+\begin{proof}
+Immediate from \texttt{proven\_is\_terminal}: no constructor of
+\texttt{ValidTransition} matches the source
+$\texttt{locked}(\texttt{proven})$.
+\end{proof}
+
+\paragraph{Conditional and Heuristic Cycles.}
+Conditional and heuristic locks \emph{do} permit cycles
+(active $\to$ dropped $\to$ locked $\to$ reactivated $\to$
+active), which is intentional: new tools or resolved conditions
+should allow revisiting a domain. The kernel guarantees that
+such cycles never produce proven locks from soft evidence
+(Theorem~\ref{thm:nopremature}).
+
+%% ============================================================
+\section{Related Work}
+\label{sec:related}
+
+\paragraph{Proof Engineering in ITP.}
+The challenge of maintaining large formal developments is well-documented.
+Gross et~al.~\cite{GrossEtAl2024} address proof-engine scaling in Coq through
+performant rewriting primitives. Sarracino et~al.~\cite{CoqSurvey2025} survey
+Coq users and identify proof brittleness and workflow safety as persistent
+community concerns. Isabelle's session model~\cite{IsabelleSessions}
+provides build-level governance through document preparation and dependency
+tracking. Our work operates at a different granularity: we govern the
+\emph{epistemic status} of claims, not the build process, though both
+concerns are complementary.
+
+\paragraph{Certificate-Based Approaches.}
+Proof certificates appear in several contexts: Coq's
+\texttt{Qed} command verifies a proof term against a type;
+SAT/SMT solvers produce checkable resolution traces; and
+proof-producing compilers (e.g., CakeML) carry correctness
+witnesses through compilation.
+Our certificates are coarser-grained: they classify evidence
+\emph{type} rather than carrying the evidence itself.
+This tradeoff sacrifices completeness for lightweight governance
+that can span heterogeneous proof methods (formal,
+computational, conditional, heuristic).
+
+\paragraph{AI-Assisted Mathematics.}
+Machine learning systems for theorem proving---including
+tactic prediction~\cite{BlaauwbroekUrbanGeuvers2020} and
+autoformalization---are increasingly powerful but can
+produce plausible yet unsound output, a phenomenon studied
+under ``hallucination''~\cite{FarrugiaEtAl2024}.
+Our kernel is source-agnostic: it enforces that
+AI-generated heuristic evidence cannot be silently promoted
+to proven status, regardless of how convincing it appears.
+
+%% ============================================================
+\section{Artifact and Reproducibility}
+\label{sec:artifact}
+
+The Lean~4 formalization is available at
+\texttt{[repository URL]}\footnote{To be provided upon publication.}.
+The artifact comprises:
+
+\begin{itemize}
+\item \texttt{Governance.lean}: definitions and core lock/permission theorems
+  (82 lines).
+\item \texttt{Lambda.lean}: signature classification and case study I
+  (148 lines).
+\item \texttt{Soundness.lean}: safety theorems (98 lines).
+\end{itemize}
+
+\noindent
+\textbf{Build.} Install Lean~4 v4.14.0 via \texttt{elan}, then run
+\texttt{lake build}. The toolchain is pinned via
+\texttt{lean-toolchain} (content: \texttt{leanprover/lean4:v4.14.0}).
+The build is deterministic given this toolchain and completes with
+zero errors.
+
+\smallskip\noindent
+\textbf{Sorry isolation.}
+The single \texttt{sorry} in \texttt{Lambda.lean} marks the
+analytic content of the ABC argument, which is conditional by
+design. It is not imported or used by \texttt{Soundness.lean};
+all five kernel safety theorems (Theorems~1--5) are
+\texttt{sorry}-free.
+
+%% ============================================================
+\section{Conclusion and Future Work}
+\label{sec:conclusion}
+
+We have presented a proof governance kernel that enforces typed certificates
+and locks on mathematical proof campaigns, preventing unsound claim promotion.
+Five safety invariants are machine-checked in Lean~4 with no additional axioms.
+
+Future directions include:
+\begin{itemize}
+\item \textbf{Fine-grained conditionality.} Extending the
+  certificate hierarchy to distinguish GRH-conditional,
+  ABC-conditional, and computational results, with composition
+  rules that track maximum conditionality through chains.
+\item \textbf{Integration with proof assistants.} Embedding the kernel as a
+  Lean~4 meta-programming plugin that automatically classifies tactic-generated
+  proofs.
+\item \textbf{Empirical evaluation.} Applying the kernel to a real proof
+  campaign (e.g., the Liquid Tensor Experiment or Fermat's Last Theorem
+  formalization) and measuring whether it catches misclassified claims.
+\end{itemize}
+
+%% ============================================================
+\begin{thebibliography}{10}
+
+\bibitem{BlaauwbroekUrbanGeuvers2020}
+L.~Blaauwbroek, J.~Urban, H.~Geuvers.
+\newblock Tactic learning and proving for the {C}oq proof assistant.
+\newblock In: \emph{LPAR-23}, EPiC Series, 2020.
+
+\bibitem{CoqSurvey2025}
+J.~Sarracino et~al.
+\newblock Lessons for interactive theorem proving researchers from a survey of
+  {C}oq users.
+\newblock \emph{J.\ Autom.\ Reason.}, 2025.
+
+\bibitem{DarmonGranville1995}
+H.~Darmon, A.~Granville.
+\newblock On the equations $z^m = F(x,y)$ and $Ax^p + By^q = Cz^r$.
+\newblock \emph{Bull.\ London Math.\ Soc.}, 27(6):513--543, 1995.
+
+\bibitem{Faltings1983}
+G.~Faltings.
+\newblock Endlichkeitss\"atze f\"ur abelsche {V}ariet\"aten \"uber
+  {Z}ahlk\"orpern.
+\newblock \emph{Invent.\ Math.}, 73(3):349--366, 1983.
+
+\bibitem{GrossEtAl2024}
+J.~Gross, A.~Chlipala, et~al.
+\newblock Towards a scalable proof engine: A performant prototype rewriting
+  primitive for {C}oq.
+\newblock \emph{J.\ Autom.\ Reason.}, 2024.
+
+\bibitem{IsabelleSessions}
+{Isabelle Team}.
+\newblock Isabelle system manual: Theory sessions.
+\newblock \url{https://proofcraft.systems/isabelle/dist/library/Doc/System/Sessions.html}, 2025.
+
+\bibitem{Masser1985}
+D.~W.~Masser.
+\newblock Open problems.
+\newblock In: \emph{Proc.\ Sympos.\ Analytic Number Theory}, London, 1985.
+
+\bibitem{Oesterle1988}
+J.~Oesterl\'e.
+\newblock Nouvelles approches du ``th\'eor\`eme'' de {F}ermat.
+\newblock \emph{S\'em.\ Bourbaki}, exp.~694, 1988.
+
+\bibitem{RatcliffeSurvey2025}
+D.~Ratcliffe, B.~Grechuk.
+\newblock Generalised {F}ermat equation: A survey of solved cases.
+\newblock \emph{Exposition.\ Math.}, 43(4), 2025.
+
+\bibitem{FarrugiaEtAl2024}
+S.~Farquhar, J.~Kossen, L.~Kuhn, Y.~Gal.
+\newblock Detecting hallucinations in large language models using
+  semantic entropy.
+\newblock \emph{Nature}, 630:625--630, 2024.
+
+\bibitem{DahmenMPIM2025}
+S.~Dahmen.
+\newblock Generalized {F}ermat equations with three distinct prime exponents.
+\newblock MPIM Number Theory Lunch Seminar, Apr.~2, 2025.
+
+\end{thebibliography}
+
+\end{document}

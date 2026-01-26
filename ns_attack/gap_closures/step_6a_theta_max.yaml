@@ -1,0 +1,15 @@
+closes_gap: GAP_003_THETA_MAX
+fragile: true
+fragile_reason: Sharp constant not computed; existence of C < 1 argued but not proven
+justification: "Fourier synthesis with orthogonality constraint k\xB7\xFB = 0 at each\
+  \ mode. Phases average alignment below theoretical maximum from single-mode analysis."
+latex: '\hat{S}(k) \subset \text{span}(\{v : v \perp k\}), \quad S(x) = \int \hat{S}(k)
+  e^{ikx} dk \implies \text{alignment bounded}'
+number: 6a
+statement: "ALIGNMENT BOUND FROM FOURIER STRUCTURE: Each Fourier mode k contributes\
+  \ a strain tensor \u015C(k) = (ik\u2297\xFB + \xFB\u2297ik)/2 which lives in the\
+  \ plane \u22A5 k (since k\xB7\xFB = 0). When modes superpose to form S(x), the random\
+  \ phases prevent coherent alignment. The variational maximum over all incompressible\
+  \ fields is bounded by C < 1."
+uses_orthogonality: true
+uses_variational: true

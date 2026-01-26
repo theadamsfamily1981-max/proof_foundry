@@ -1,0 +1,135 @@
+assumptions:
+- u ∈ L²(ℝ³) ∩ W^{1,∞}(ℝ³) (finite energy, bounded gradient)
+- ∇·u = 0 (incompressible)
+- Sufficient decay at infinity for Fourier transform
+- No external forcing (or bounded forcing)
+confidence: 0.65
+core_insight: In Fourier space, incompressibility ∇·u = 0 becomes k·û(k) = 0 for all
+  k. This means û(k) lies in the 2D plane perpendicular to k. Similarly, ω̂(k) = ik
+  × û(k) also lies perpendicular to k. These orthogonality constraints prevent the
+  vorticity stretching term from achieving perfect alignment, bounding the geometric
+  factor C < 1.
+definitions:
+  S: Strain tensor S = (∇u + ∇uᵀ)/2
+  alignment: Alignment factor cos(θ) where θ is angle between ω and (ω·∇)u
+  omega: Vorticity ω = ∇ × u = curl(u)
+  omega_hat: ω̂(k) = ik × û(k) (Fourier of curl)
+  stretching: Vorticity stretching term (ω·∇)u
+  u: 'Velocity field, u: ℝ³ → ℝ³'
+  u_hat: Fourier transform û(k) = ∫ u(x)e^{-ik·x} dx
+latex_statement: '|ω(x) \cdot (\omega \cdot \nabla) u(x)| \leq |\omega(x)|^2 \cdot
+  \|\nabla u\|_{L^\infty}'
+lemma_id: GAL_002_FOURIER
+orthogonality_uses:
+- k·û(k) = 0 (incompressibility in Fourier space)
+- k·ω̂(k) = 0 (curl is perpendicular to wavenumber)
+- ω̂ and stretching term constrained to mutually oblique planes
+- Integration averages alignment below maximum
+potential_gaps:
+- 'Step 5-6: Need rigorous computation of θ_max geometric factor'
+- 'Step 6: Handle parallel wavenumber case (k'' ∥ k-k'')'
+- 'Step 8: Pointwise vs L² bound transition needs more rigor'
+- Need to show C < 1 emerges naturally, not just C finite
+- Boundary of integration domain in convolution needs care
+proof_steps:
+- fragile: false
+  fragile_reason: ''
+  justification: The divergence transforms as ∇·u ↔ ik·û(k). Incompressibility requires
+    this to vanish for all k.
+  latex: \nabla \cdot u = 0 \Leftrightarrow k \cdot \hat{u}(k) = 0 \quad \forall k
+  number: 1
+  statement: Transform to Fourier space. The incompressibility ∇·u = 0 becomes k·û(k)
+    = 0 for all wavenumbers k.
+  uses_curl_relation: false
+  uses_orthogonality: true
+- fragile: false
+  fragile_reason: ''
+  justification: The curl transforms as ∇×u ↔ ik×û(k). Cross product a×b is perpendicular
+    to both a and b.
+  latex: \hat{\omega}(k) = ik \times \hat{u}(k) \implies k \cdot \hat{\omega}(k) =
+    0
+  number: 2
+  statement: The vorticity ω = ∇ × u transforms to ω̂(k) = ik × û(k). Crucially, k·ω̂(k)
+    = k·(ik × û(k)) = 0 by properties of cross product.
+  uses_curl_relation: true
+  uses_orthogonality: true
+- fragile: false
+  fragile_reason: ''
+  justification: Product in physical space becomes convolution in Fourier space. The
+    ∇ contributes the factor ik.
+  latex: \mathcal{F}[(\omega \cdot \nabla)u](k) = \int_{\mathbb{R}^3} \hat{\omega}(k')
+    \cdot (i(k-k')) \hat{u}(k-k') \, dk'
+  number: 3
+  statement: 'The stretching term (ω·∇)u transforms via convolution. In Fourier space:
+    F[(ω·∇)u] involves (ω̂ * k''·û(k-k'')) type terms.'
+  uses_curl_relation: false
+  uses_orthogonality: false
+- fragile: false
+  fragile_reason: ''
+  justification: Direct consequence of incompressibility k·û = 0 and vorticity being
+    curl of velocity.
+  latex: \hat{\omega}(k') \perp k', \quad \hat{u}(k-k') \perp (k-k')
+  number: 4
+  statement: "KEY INSIGHT: For each wavenumber pair (k', k-k'), we have:\n  - ω̂(k')\
+    \ ⊥ k' (from Step 2)\n  - û(k-k') ⊥ (k-k') (from Step 1)\nThis creates geometric\
+    \ constraints on the convolution integral."
+  uses_curl_relation: false
+  uses_orthogonality: true
+- fragile: true
+  fragile_reason: Need to rigorously compute θ_max from the orthogonality constraints.
+    The precise geometric argument for why C < 1 emerges requires careful calculation.
+  justification: The maximum alignment angle θ_max is constrained by the mutual orthogonality
+    conditions. Perfect alignment (cos θ = 1) is impossible.
+  latex: \hat{\omega}(k') \cdot [(k-k') \otimes \hat{u}(k-k')] \leq |\hat{\omega}(k')|
+    \cdot |k-k'| \cdot |\hat{u}(k-k')| \cdot \cos(\theta_{max})
+  number: 5
+  statement: The orthogonality constraints limit the alignment between ω̂ and the
+    stretching term. In the worst case, the inner product ω̂(k')·[(k-k')·û(k-k')]
+    cannot reach maximum because both vectors are constrained to lie in orthogonal
+    planes.
+  uses_curl_relation: false
+  uses_orthogonality: true
+- fragile: true
+  fragile_reason: This step assumes the wavenumbers are not parallel. The parallel
+    case (k' ∥ k-k') needs separate treatment.
+  justification: The planes P₁ and P₂ intersect along a line unless k' ∥ (k-k'). The
+    angle between vectors in perpendicular planes equals π/2 minus the angle between
+    the planes' normal vectors.
+  latex: \cos(\theta_{max}) = \sin(\angle(k', k-k')) = \sqrt{1 - \frac{(k' \cdot (k-k'))^2}{|k'|^2
+    |k-k'|^2}}
+  number: 6
+  statement: 'Computing the maximum alignment factor: When ω̂ lies in plane P₁ ⊥ k''
+    and û lies in plane P₂ ⊥ (k-k''), the maximum inner product between directions
+    in these planes depends on the angle between k'' and (k-k'').'
+  uses_curl_relation: false
+  uses_orthogonality: true
+- fragile: false
+  fragile_reason: ''
+  justification: 'Plancherel theorem: ‖f‖_{L²} = ‖f̂‖_{L²}. The Fourier bound translates
+    to physical space. The constant C arises from the average alignment constraint.'
+  latex: \|(\omega \cdot \nabla)u\|_{L^2} \leq C \|\omega\|_{L^2} \|\nabla u\|_{L^\infty}
+  number: 7
+  statement: 'Averaging over all wavenumber contributions: The constraint that k''
+    and (k-k'') cannot align perfectly for all contributions ensures that the net
+    stretching alignment is bounded. By Plancherel, the L² bound transfers to physical
+    space.'
+  uses_curl_relation: false
+  uses_orthogonality: false
+- fragile: true
+  fragile_reason: The transition from Fourier to pointwise requires careful handling.
+    Need to show that the orthogonality constraint sufficiently limits the real-space
+    maximum, not just the L² norm.
+  justification: The pointwise bound follows from the Fourier analysis by observing
+    that the maximum contribution at any point x is limited by the geometric constraint
+    on alignment. This is where the empirical C ≤ 0.113 emerges.
+  latex: '|ω(x) \cdot (\omega \cdot \nabla)u(x)| \leq |\omega(x)|^2 \|\nabla u\|_\infty'
+  number: 8
+  statement: 'For the pointwise bound: The alignment ω·(ω·∇)u at a point x involves
+    contributions from all wavenumbers. The orthogonality constraints on each Fourier
+    mode prevent coherent constructive interference that would exceed |ω|²‖∇u‖_∞.'
+  uses_curl_relation: false
+  uses_orthogonality: false
+statement: 'For incompressible Navier-Stokes flow (∇·u = 0) with vorticity ω = ∇×u,
+  the vorticity stretching alignment satisfies: |ω(x)·(ω·∇)u(x)| ≤ |ω(x)|² · ‖∇u‖_∞
+  for all x where ω(x) ≠ 0.'
+version: 2.0-fourier

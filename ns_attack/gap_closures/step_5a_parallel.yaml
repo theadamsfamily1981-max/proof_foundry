@@ -1,0 +1,11 @@
+closes_gap: GAP_001_PARALLEL
+fragile: false
+justification: "The parallel condition k' = \u03BB(k-k') defines a 1-parameter family,\
+  \ which is a line through the origin. Lines have 3D measure zero."
+latex: '\text{Leb}_3(\{k'' : k'' \parallel (k-k'')\}) = 0 \implies \text{zero contribution}'
+number: 5a
+statement: "PARALLEL CASE HANDLING: The set of k' where k' \u2225 (k-k') has Lebesgue\
+  \ measure zero in \u211D\xB3. Therefore, this case contributes exactly zero to the\
+  \ convolution integral and can be excluded from the alignment analysis."
+uses_measure_theory: true
+uses_orthogonality: false

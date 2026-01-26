@@ -1,0 +1,58 @@
+{
+  "goal": "Prove Navier-Stokes 3D global regularity via geometric_alignment_lemma",
+  "hard_constraints": [
+    "All definitions must match the frozen definition set",
+    "No step may assume what we're trying to prove",
+    "Scaling must be checked at every step",
+    "Compactness arguments must specify the topology",
+    "Bootstrap arguments must have explicit iteration bounds",
+    "No 'clearly' or 'obviously' without justification"
+  ],
+  "definitions": {
+    "NSE": "\u2202_t u + (u\u00b7\u2207)u = \u03bd\u0394u - \u2207p, \u2207\u00b7u = 0",
+    "weak_solution": "Leray-Hopf weak solution",
+    "energy_inequality": "\u00bd\u2016u(t)\u2016\u00b2 + \u03bd\u222b\u2080\u1d57\u2016\u2207u\u2016\u00b2 ds \u2264 \u00bd\u2016u\u2080\u2016\u00b2",
+    "local_energy_inequality": "\u2202_t(\u00bd|u|\u00b2) + \u2207\u00b7((\u00bd|u|\u00b2 + p)u) \u2264 \u03bd\u0394(\u00bd|u|\u00b2) - \u03bd|\u2207u|\u00b2",
+    "scaling": "u_\u03bb(x,t) = \u03bbu(\u03bbx, \u03bb\u00b2t), p_\u03bb = \u03bb\u00b2p(\u03bbx, \u03bb\u00b2t)",
+    "critical_norm": "L\u00b3(\u211d\u00b3) or L^\u221e_t L\u00b3_x",
+    "similarity_variables": "Self-similar: U(y) = \u221aT u(\u221aT y, T-t)",
+    "vorticity": "\u03c9 = \u2207\u00d7u",
+    "strain_tensor": "S = (\u2207u + \u2207u\u1d40)/2",
+    "enstrophy": "Z = \u00bd\u222b|\u03c9|\u00b2 dx",
+    "C_dep": "|\u222b\u03c9\u00b7(\u03c9\u00b7\u2207)u dx| / (2Z\u00b7\u2016\u2207u\u2016_\u221e)",
+    "UCT_bound": "C\u2083 = \u221a(2/3) \u2248 0.816"
+  },
+  "tool_policy": {
+    "allowed": [
+      "bash",
+      "filesystem",
+      "mcp:ara-security",
+      "grep",
+      "read",
+      "write"
+    ],
+    "disallowed": [
+      "exfiltration",
+      "credential_scraping",
+      "scope_escalation",
+      "proc_access",
+      "metadata_endpoints"
+    ],
+    "tier": 2
+  },
+  "success_criteria": [
+    "Complete proof chain from axioms to regularity",
+    "All lemmas verified (survived attack + passed checks)",
+    "No unresolved gaps or hidden assumptions",
+    "Scaling consistency verified throughout"
+  ],
+  "stop_rules": {
+    "max_iters": 12,
+    "stall_iters": 3,
+    "drift_threshold": 0.6,
+    "fep_threshold": 0.7
+  },
+  "created_at": "2026-01-03T04:11:14.343770",
+  "amendments": [],
+  "hash": "504f9f7ee535"
+}

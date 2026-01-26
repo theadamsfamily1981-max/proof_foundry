@@ -1,0 +1,17 @@
+confidence: 0.75
+gap_description: "L\xB2 to pointwise bound transition"
+gap_id: GAP_002_POINTWISE
+lemma: "For incompressible flow, |\u03BE\u1D40(\u2207u)\u03BE| = |\u03BE\u1D40S\u03BE\
+  | \u2264 max|\u03BB\u1D62(S)| where S is the traceless strain tensor. The traceless\
+  \ condition bounds max|\u03BB\u1D62| \u2264 \u221A(2/3)\xB7\u2016S\u2016_F."
+proof:
+- "\u03C9\xB7(\u03C9\xB7\u2207)u = |\u03C9|\xB2\xB7\u03BE\u1D40(\u2207u)\u03BE where\
+  \ \u03BE = \u03C9/|\u03C9|"
+- "\u03BE\u1D40(\u2207u)\u03BE = \u03BE\u1D40S\u03BE (antisymmetric part vanishes)"
+- "S is traceless from \u2207\xB7u = 0"
+- "For traceless S: max|\u03BB\u1D62| \u2264 \u221A(2/3)\xB7\u2016S\u2016_F"
+- "This gives C \u2264 \u221A2 \u2248 1.41 (matching real-space result)"
+- Fourier orthogonality further constrains to C < 1
+remaining: "Need to show Fourier constraints sharpen \u221A2 to C < 1"
+resolution: Quadratic form + traceless eigenvalue bound
+status: PARTIALLY_CLOSED

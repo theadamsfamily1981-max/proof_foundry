@@ -1,0 +1,13 @@
+confidence: 0.95
+gap_description: "Parallel wavenumber case k' \u2225 (k-k')"
+gap_id: GAP_001_PARALLEL
+lemma: "For any fixed k \u2260 0, the set \u03A0 = {k' \u2208 \u211D\xB3 : k' \u2225\
+  \ (k-k')} has Lebesgue measure zero in \u211D\xB3."
+proof:
+- "k' \u2225 (k-k') implies k' = \u03BB(k-k') for some \u03BB \u2208 \u211D"
+- "Solving: k' = \u03BBk/(1+\u03BB), a 1-parameter family"
+- "This traces the line \u211D\xB7k through the origin"
+- A line has 3D Lebesgue measure zero
+- Therefore, the parallel set contributes 0 to the integral
+resolution: Measure-zero argument
+status: CLOSED
