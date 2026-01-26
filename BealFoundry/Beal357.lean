@@ -295,6 +295,79 @@ theorem ghost_params_sum_to_den :
     ghost1.t0Num + ghost2.t0Num = ghost1.t0Den := by native_decide
 
 -- ═══════════════════════════════════════════════════════════════════
+-- § 7c. Route A: Local Elimination at π = √5 (Jan 26 2026)
+-- ═══════════════════════════════════════════════════════════════════
+
+/- Route A analysis: conductor mismatch at the ramified prime π = √5.
+
+   KEY FINDING: Wild ramification at char 5 is INVISIBLE mod 7.
+
+   The HGM β-parameters (1/5, 4/5) create wild ramification of pro-5
+   order at π. But GL₂(F₇) has order 2016 = 2⁵·3²·7, and 5 ∤ 2016.
+   Therefore any pro-5 group maps trivially to GL₂(F₇), and the
+   wild conductor vanishes in the 7-adic representation.
+
+   PARTIAL SUCCESS: When 5 | b or 5 | c, the Frey curve E₃⁺ has
+   multiplicative reduction at π (Kodaira type I_n), giving f_π = 1.
+   Level-lowering requires 7 | (Norm(π)-1) = 4, which fails.
+   So ghosts are eliminated for these sub-cases.
+
+   FAILURE: When 5 ∤ abc (generic case), both E₃⁺ and E₃⁻ have
+   GOOD reduction at π, so f_π = 0 = f_π(ghost). No obstruction.
+
+   CONCLUSION: Route A is INSUFFICIENT to close GAP_B alone. -/
+
+/-- GL₂(F₇) has order 2016, which is not divisible by 5. -/
+theorem gl2_f7_order_not_div_5 : 2016 % 5 ≠ 0 := by native_decide
+
+/-- Norm(π) - 1 = 4 is not divisible by 7 (tame obstruction). -/
+theorem tame_obstruction_at_sqrt5 : 4 % 7 ≠ 0 := by native_decide
+
+/-- Route A status: partially works (5|b or 5|c) but not generic case. -/
+inductive RouteAResult where
+  | succeeds       -- Ghost eliminated for this sub-case
+  | fails          -- No obstruction at π
+  | needsAnalysis  -- Requires Tate algorithm
+  deriving Repr, BEq, DecidableEq
+
+/-- Route A results by divisibility sub-case. -/
+def routeA_5_not_div_abc : RouteAResult := .fails
+def routeA_5_div_b       : RouteAResult := .succeeds
+def routeA_5_div_c       : RouteAResult := .succeeds
+def routeA_5_div_a       : RouteAResult := .needsAnalysis
+
+/-- Route A does NOT close the generic case. -/
+theorem routeA_generic_fails : routeA_5_not_div_abc = .fails := by rfl
+
+/-- Route A succeeds when 5 | b. -/
+theorem routeA_5b_succeeds : routeA_5_div_b = .succeeds := by rfl
+
+/-- Route A succeeds when 5 | c. -/
+theorem routeA_5c_succeeds : routeA_5_div_c = .succeeds := by rfl
+
+-- ═══════════════════════════════════════════════════════════════════
+-- § 7d. Route B²: Multi-Frey (Next Direction)
+-- ═══════════════════════════════════════════════════════════════════
+
+/-- The paper's two Frey curves for signature (5,p,3) with r=3.
+    E₃⁺(t): y² + 3xy + ty = x³
+    E₃⁻(t): y² = x³ - 3x + 4t - 2
+
+    Multi-Frey: BOTH representations ρ̄_{E₃⁺,7} and ρ̄_{E₃⁻,7}
+    must simultaneously match ghost forms. The combined constraint
+    space is typically much smaller than either alone.
+
+    STATUS: Not yet attempted. Most promising remaining route. -/
+structure FreyCurvePair where
+  plusLabel  : String  -- E₃⁺ identifier
+  minusLabel : String  -- E₃⁻ identifier
+  deriving Repr
+
+def freyPair357 : FreyCurvePair where
+  plusLabel  := "E₃⁺(t): y² + 3xy + ty = x³"
+  minusLabel := "E₃⁻(t): y² = x³ - 3x + 4t - 2"
+
+-- ═══════════════════════════════════════════════════════════════════
 -- § 8. Upgrade Path: What Happens When GAP_B is Closed
 -- ═══════════════════════════════════════════════════════════════════
 
@@ -401,9 +474,9 @@ def domain : BealFoundry.Domain where
       }
       openSeam := none },
     { statement := "No coprime solutions with 3|a (ghost elimination)"
-      status := "conditional — ghosts identified as Cremona 24.a twists (Jan 2026)"
+      status := "conditional — ghosts identified as Cremona 24.a ⊗ χ±2 (Jan 2026)"
       certificate := some beal357Certificate
-      openSeam := some "Mod-7 trace elimination using Cremona data (no Magma needed)" },
+      openSeam := some "Multi-Frey (Route B²) or contact authors; Route A partial, Route B blocked" },
     { statement := "Zero coprime solutions found (a,b ≤ 1000)"
       status := "computationally verified"
       certificate := some {

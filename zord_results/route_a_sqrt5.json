@@ -1,0 +1,37 @@
+{
+  "route": "A",
+  "target": "Local elimination at \u03c0 = \u221a5",
+  "conductor_analysis": {
+    "f_pi": 2,
+    "divisible_by_7": false,
+    "route_a_succeeds": true
+  },
+  "level_lowering": {
+    "f_pi_frey": 2,
+    "f_pi_ghost": 0,
+    "p": 7,
+    "can_eliminate_pi": false,
+    "ghost_dead": true
+  },
+  "wild_tame": {
+    "p": 7,
+    "norm_pi": 5,
+    "tame_can_drop": false,
+    "wild_can_drop": false,
+    "obstruction": true
+  },
+  "verdict": "GHOST ELIMINATED (conditional on f_\u03c0 \u2265 1)",
+  "key_arithmetic": {
+    "Norm_pi": 5,
+    "Norm_pi_minus_1": 4,
+    "p": 7,
+    "7_divides_4": false,
+    "f_pi_frey": 2,
+    "f_pi_ghost": 0,
+    "Swan_conductor": 1,
+    "7_divides_Swan": false
+  },
+  "remaining_verification": [
+    "Verify paper's specific Frey construction gives f_\u03c0 \u2265 1 at \u03c0"
+  ]
+}

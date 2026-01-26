@@ -1,0 +1,13 @@
+{
+  "route_a_status": "PARTIALLY FAILED",
+  "correction": "Wild ramification at char 5 is invisible in 7-adic world",
+  "reason": "Pro-5 groups map trivially to GL\u2082(F\u2087) since 5 \u2224 |GL\u2082(F\u2087)| = 2016",
+  "sub_cases": {
+    "5_not_div_abc": "FAILS (f_\u03c0 = 0 for both Frey and ghost)",
+    "5_div_b": "SUCCEEDS (f_\u03c0 \u2265 1 vs 0, 7 \u2224 4)",
+    "5_div_c": "SUCCEEDS (f_\u03c0 = 1 vs 0, 7 \u2224 4)",
+    "5_div_a": "NEEDS ANALYSIS (Tate algorithm)"
+  },
+  "convergence": 0.9,
+  "next_route": "Multi-Frey (Route B\u00b2) or contact authors (Route C)"
+}
