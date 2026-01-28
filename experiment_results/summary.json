@@ -1,0 +1,21 @@
+{
+  "exp1_sigmoid": {
+    "n0_mean": 26.0,
+    "n0_std": 0.0,
+    "delta_mean": 12.0,
+    "delta_std": 0.0,
+    "n0_clusters": 1.0,
+    "delta_clusters": 1.0
+  },
+  "exp3_verdict": {
+    "landmarks_follow_cadence": false,
+    "42_is_structural": false,
+    "interpretation": "inconclusive"
+  },
+  "exp4_verdict": {
+    "frames_follow_p_max": true,
+    "46_is_hardcoded": false,
+    "interpretation": "46 is representation-locked (follows 2\u00d7p_max)"
+  },
+  "exp5_babel_detected": true
+}

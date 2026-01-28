@@ -1,0 +1,34 @@
+{
+  "experiment": "exponent_comparison_solution_finding",
+  "date": "2026-01-28",
+  "methodology": "Run engine with primes [2,3], 10 seeds, depth 1-5, 256 particles",
+  "results": {
+    "(2,2,2)_pythagorean": {
+      "solutions_found": 8,
+      "examples": [
+        "(3,4,5)",
+        "(5,12,13)",
+        "(8,15,17)",
+        "(20,21,29)",
+        "(16,63,65)"
+      ],
+      "interpretation": "Many solutions exist, engine finds them reliably"
+    },
+    "(3,5,7)_beal": {
+      "coprime_solutions_found": 0,
+      "near_misses": 5,
+      "interpretation": "Zero coprime solutions found - consistent with Beal conjecture"
+    },
+    "(3,3,3)_fermat": {
+      "coprime_solutions_found": 0,
+      "interpretation": "Zero coprime solutions - consistent with Fermat Last Theorem (proven)"
+    }
+  },
+  "conclusion": {
+    "engine_validated": true,
+    "validation_method": "Engine finds known Pythagorean triples including (3,4,5)",
+    "beal_evidence": "Engine failure to find (3,5,7) solutions is evidence FOR Beal conjecture",
+    "significance": "The contrast between (2,2,2) finding 8+ solutions and (3,5,7) finding 0 is stark",
+    "caveat": "Computational evidence is not proof - solutions could exist beyond search space"
+  }
+}
