@@ -23,3 +23,5 @@ import BealFoundry.BealLandscape
 import BealFoundry.BiblicalGematria
 import BealFoundry.SacredArithmetic
 import BealFoundry.GematriaChains
+import BealFoundry.FibonacciGematria
+import BealFoundry.PrimeCompositeChains
