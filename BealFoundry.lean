@@ -25,3 +25,4 @@ import BealFoundry.SacredArithmetic
 import BealFoundry.GematriaChains
 import BealFoundry.FibonacciGematria
 import BealFoundry.PrimeCompositeChains
+import BealFoundry.GenesisArithmetic
