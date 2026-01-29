@@ -17,3 +17,4 @@ import BealFoundry.Beal357
 import BealFoundry.CognitiveDiscipline
 import BealFoundry.SevenTruths
 import BealFoundry.SigmoidStructure
+import BealFoundry.CriticalCognition
