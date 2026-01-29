@@ -20,3 +20,4 @@ import BealFoundry.SigmoidStructure
 import BealFoundry.CriticalCognition
 import BealFoundry.FLTReduction
 import BealFoundry.BealLandscape
+import BealFoundry.BiblicalGematria
